@@ -1,0 +1,581 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+% ==============================================================================
+% PACOTES FUNDAMENTAIS
+% ==============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{lmodern}
+
+% Matemática, Tabelas e Símbolos
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multirow}
+
+% Gráficos Vetoriais e QR Code
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, shadows}
+\usepackage{graphicx}
+\usepackage{qrcode}
+
+% ==============================================================================
+% PALETA DE CORES (IDENTIDADE VISUAL DO PROJETO FLEXO)
+% ==============================================================================
+\definecolor{FlexoDark}{HTML}{1E242B}      % Grafite escuro principal
+\definecolor{FlexoBlue}{HTML}{0066CC}      % Azul técnico
+\definecolor{FlexoOrange}{HTML}{F26522}    % Laranja destaque (trilho/acentos)
+\definecolor{FlexoLightBg}{HTML}{F4F6F9}   % Fundo claro dos blocos
+\definecolor{FlexoGray}{HTML}{5A6577}      % Cinza secundário
+\definecolor{ChassisGray}{HTML}{3B4046}    % Cinza-grafite do chassi do robô
+\definecolor{ColYellow}{HTML}{F7E354}      % Amarelo da coluna e base deslizante
+\definecolor{SensorBlue}{HTML}{2A85FF}     % Azul dos sensores/cubos
+\definecolor{RailOrange}{HTML}{F28522}     % Laranja do trilho linear
+\definecolor{ClawRed}{HTML}{D93829}        % Vermelho dos dedos das garras
+
+% ==============================================================================
+% CONFIGURAÇÃO DO TEMA BEAMER E RODAPÉ DINÂMICO
+% ==============================================================================
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\setbeamercolor{palette primary}{bg=FlexoDark, fg=white}
+\setbeamercolor{palette secondary}{bg=FlexoBlue, fg=white}
+\setbeamercolor{palette tertiary}{bg=FlexoOrange, fg=white}
+\setbeamercolor{frametitle}{bg=FlexoDark, fg=white}
+\setbeamercolor{title}{bg=FlexoDark, fg=white}
+\setbeamercolor{block title}{bg=FlexoBlue, fg=white}
+\setbeamercolor{block body}{bg=FlexoLightBg, fg=black}
+\setbeamercolor{alerted text}{fg=FlexoOrange}
+\setbeamercolor{item}{fg=FlexoOrange}
+
+% Variável dinâmica para armazenar o nome do apresentador atual
+\newcommand{\currentpresenter}{Rodrigo}
+\newcommand{\setpresenter}[1]{\renewcommand{\currentpresenter}{#1}}
+
+% Remover símbolos de navegação padrão
+\setbeamertemplate{navigation symbols}{}
+
+% Rodapé personalizado com nome do apresentador no canto esquerdo e numeração 01/10 a 10/10 no direito
+\setbeamertemplate{footline}{
+	\leavevmode%
+	\hbox{%
+		\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.6ex,dp=1.1ex,left]{author in head/foot}%
+			\hspace*{2ex}\usebeamerfont{author in head/foot}\textbf{Apresentador:} \currentpresenter
+		\end{beamercolorbox}%
+		\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.6ex,dp=1.1ex,center]{title in head/foot}%
+			\usebeamerfont{title in head/foot}Flexo $\cdot$ TURNO SEED P2 CEFET
+		\end{beamercolorbox}%
+		\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.6ex,dp=1.1ex,right]{date in head/foot}%
+			\usebeamerfont{date in head/foot}%
+			\ifnum\insertframenumber<10 0\fi\insertframenumber/\ifnum\inserttotalframenumber<10 0\fi\inserttotalframenumber\hspace*{2ex}
+	\end{beamercolorbox}}%
+	\vskip0pt%
+}
+
+% Metadados do Documento
+\title[Flexo]{Flexo}
+\subtitle{Projeto de um robô de dois braços, com pinças, feitas para impressão 3D, que tira a peça da placa e devolve a impressora ao trabalho.}
+\author{Equipe: Steve, Júlio, Gabriel, João Henrique e Rodrigo}
+\institute{TURNO RODADA SEED P2 DE ENGENHARIA MECÂNICA CEFET}
+\date{}
+
+\begin{document}
+	
+	% ==============================================================================
+	% SLIDE 01/10: CAPA (Apresentador: Rodrigo)
+	% ==============================================================================
+	\setpresenter{Rodrigo}
+	\begin{frame}[plain]
+		\begin{tikzpicture}[remember picture, overlay]
+			% Fundo escuro
+			\fill[FlexoDark] (current page.south west) rectangle (current page.north east);
+			% Faixa superior laranja
+			\fill[FlexoOrange] (current page.north west) rectangle ([yshift=-0.22cm]current page.north east);
+			% Detalhe geométrico lateral
+			\fill[FlexoBlue, opacity=0.18] ([xshift=-3.5cm]current page.south east) -- (current page.south east) -- (current page.north east) -- ([xshift=-1.2cm]current page.north east) -- cycle;
+			% Rodapé específico da capa com Apresentador e 01/10
+			\node[anchor=south west, text=white, font=\footnotesize] at ([xshift=0.6cm, yshift=0.45cm]current page.south west) {\textbf{\color{FlexoOrange}Apresentador:} Rodrigo};
+			\node[anchor=south east, text=gray!70, font=\footnotesize\bfseries] at ([xshift=-0.6cm, yshift=0.45cm]current page.south east) {01/10};
+		\end{tikzpicture}
+		
+		\vspace{0.7cm}
+		{\color{FlexoOrange}\small\textbf{TURNO RODADA SEED P2 DE ENGENHARIA MECÂNICA CEFET}}
+		
+		\vspace{0.35cm}
+		{\color{white}\fontsize{46}{50}\selectfont\textbf{Flexo}}
+		
+		\vspace{0.45cm}
+		\begin{minipage}{0.82\textwidth}
+			{\color{gray!15}\large Projeto de um robô de dois braços, com pinças, feitas para impressão 3D, que tira a peça da placa e devolve a impressora ao trabalho.}
+		\end{minipage}
+		
+		\vspace{1.2cm}
+		{\color{white}\normalsize\textbf{Equipe:} Steve, Júlio, Gabriel, João Henrique e Rodrigo}
+	\end{frame}
+	
+	% ==============================================================================
+	% SLIDE 02/10: ANÁLISE DESCRITIVA (Apresentador: Rodrigo)
+	% ==============================================================================
+	\setpresenter{Rodrigo}
+	\begin{frame}{ANÁLISE DESCRITIVA}
+		\textbf{\large A impressora termina a peça e fica parada até alguém chegar}
+		\vspace{0.2cm}
+		
+		\begin{columns}[T]
+			\begin{column}{0.32\textwidth}
+				\begin{block}{\textbf{01} $\cdot$ A impressão acaba}
+					\scriptsize No meio da noite a impressão acaba e a peça fica presa na mesa esperando alguém tirá-la e iniciar outra impressão.
+				\end{block}
+			\end{column}
+			\begin{column}{0.32\textwidth}
+				\begin{block}{\textbf{02} $\cdot$ A máquina espera}
+					\scriptsize Só uma pessoa tira a placa, flexiona, solta a peça e devolve. À noite e no fim de semana, ninguém faz isso. Em um cenário de uma pequena farm, o desperdício médio é de \textbf{4 horas}, por impressora, perdidas, segundo cálculos.
+				\end{block}
+			\end{column}
+			\begin{column}{0.32\textwidth}
+				\begin{block}{\textbf{03} $\cdot$ A perda se multiplica}
+					\scriptsize Se cada impressora perde 4 horas por noite, uma farm com 10 máquinas acumula \textbf{40 horas} de capacidade ociosa, por noite. Em uma semana, o tempo ocioso chegaria a \textbf{280 horas}.
+				\end{block}
+			\end{column}
+		\end{columns}
+		
+		\vspace{0.25cm}
+		\scriptsize
+		\begin{itemize}
+			\item O programa Flexo consiste em um robô com diferentes vertentes, desenvolvido para automatizar o gerenciamento de pequenas e grandes farms de impressoras 3D. Inicialmente, serão desenvolvidos três modelos: \textbf{fixo}, \textbf{de trilho} e \textbf{móvel}, cada um pensado para atender diferentes necessidades e configurações, desde estruturas compactas com duas impressoras até grandes mesas com várias máquinas.
+			\item Equipado com dois braços robóticos, o Flexo será capaz de executar de forma autônoma tarefas que hoje dependem da intervenção humana, contribuindo para aumentar a produtividade e reduzir a necessidade de acompanhamento constante. Um exemplo de aplicação é o gerenciamento de várias impressoras \textbf{Bambu Lab A1}, com ou sem AMS, permitindo que o sistema realize sozinho atividades que atualmente exigem a presença de uma pessoa.
+		\end{itemize}
+	\end{frame}
+	
+	% ==============================================================================
+	% SLIDE 03/10: CAPACIDADES DO ROBÔ (Apresentador: Steve)
+	% ==============================================================================
+	\setpresenter{Steve}
+	\begin{frame}{CAPACIDADES DO ROBÔ}
+		\textbf{\large O que o Flexo faz}
+		\vspace{0.1cm}
+		
+		\begin{columns}[T]
+			% Coluna Esquerda: Ilustração Vetorial Isométrica do Protótipo
+			\begin{column}{0.34\textwidth}
+				\centering
+				\begin{tikzpicture}[scale=0.62, line join=round, line cap=round]
+					% Fundo suave do card ilustrativo
+					\fill[gray!12, rounded corners=6pt] (-1.2,-1.3) rectangle (6.3,6.9);
+					
+					% --- 1. TRILHO LINEAR LARANJA NA BASE (PERSPECTIVA ISOMÉTRICA) ---
+					% Extremidade metálica traseira esquerda
+					\fill[gray!45] (-0.75, 0.25) -- (-0.45, 0.42) -- (-0.45, 0.95) -- (-0.75, 0.78) -- cycle;
+					% Corpo principal do trilho laranja
+					\fill[RailOrange] (-0.6, 0.25) -- (3.9, -1.05) -- (3.9, -0.55) -- (-0.6, 0.75) -- cycle;
+					\fill[RailOrange!85!white] (-0.6, 0.75) -- (3.9, -0.55) -- (4.5, -0.25) -- (0.0, 1.05) -- cycle;
+					% Fenda/guia central escura do trilho
+					\draw[ChassisGray, line width=1.4pt] (-0.3, 0.90) -- (4.2, -0.40);
+					% Extremidade metálica frontal direita
+					\fill[gray!50] (3.9, -1.05) -- (4.5, -0.75) -- (4.5, -0.25) -- (3.9, -0.55) -- cycle;
+					\fill[gray!35] (4.45, -0.80) -- (4.65, -0.70) -- (4.65, -0.10) -- (4.45, -0.20) -- cycle;
+					% Bloco/Sensor Azul na ponta frontal direita
+					\fill[SensorBlue] (4.55, -0.95) -- (5.15, -1.12) -- (5.15, -0.55) -- (4.55, -0.38) -- cycle;
+					\fill[SensorBlue!80!black] (5.15, -1.12) -- (5.55, -0.90) -- (5.55, -0.33) -- (5.15, -0.55) -- cycle;
+					\fill[SensorBlue!75!white] (4.55, -0.38) -- (5.15, -0.55) -- (5.55, -0.33) -- (4.95, -0.16) -- cycle;
+					
+					% --- 2. BASE DESLIZANTE AMARELA E COLUNA VERTICAL ---
+					% Sapata amarela sobre o trilho
+					\fill[ColYellow!90!orange] (1.05, 0.32) -- (2.15, 0.00) -- (2.15, 0.22) -- (1.05, 0.54) -- cycle;
+					\fill[ColYellow] (2.15, 0.00) -- (2.95, 0.30) -- (2.95, 0.52) -- (2.15, 0.22) -- cycle;
+					\fill[ColYellow!80!white] (1.05, 0.54) -- (2.15, 0.22) -- (2.95, 0.52) -- (1.85, 0.84) -- cycle;
+					
+					% Parte inferior da coluna vertical amarela
+					\fill[ColYellow!95!orange] (1.65, 0.55) -- (2.05, 0.43) -- (2.05, 1.50) -- (1.65, 1.62) -- cycle;
+					\fill[ColYellow] (2.05, 0.43) -- (2.35, 0.55) -- (2.35, 1.62) -- (2.05, 1.50) -- cycle;
+					
+					% --- 3. BRAÇO SUPERIOR/ESQUERDO (PARCIALMENTE ATRÁS DO CHASSI) ---
+					% Elo superior esquerdo (branco)
+					\fill[white, draw=gray!40] (2.0, 2.8) -- (3.8, 4.9) -- (4.15, 4.65) -- (2.35, 2.55) -- cycle;
+					% Junta circular preta do cotovelo superior
+					\fill[ChassisGray] (2.25, 3.15) circle (0.28);
+					\fill[white] (2.25, 3.15) circle (0.11);
+					% Antebraço superior (branco)
+					\fill[white, draw=gray!40] (2.25, 3.30) -- (4.15, 5.45) -- (4.45, 5.20) -- (2.55, 3.05) -- cycle;
+					% Servo motor preto no punho superior
+					\fill[ChassisGray] (3.95, 5.15) -- (4.35, 5.55) -- (4.55, 5.35) -- (4.15, 4.95) -- cycle;
+					% Garra branca e dedos vermelhos superiores
+					\fill[white, draw=gray!50] (4.35, 5.50) -- (4.95, 5.95) -- (5.25, 5.55) -- (4.65, 5.10) -- cycle;
+					\fill[ChassisGray] (4.65, 5.55) rectangle (4.92, 5.82);
+					\draw[ClawRed, line width=2.2pt] (5.10, 5.82) -- (5.65, 5.85);
+					\draw[ClawRed, line width=2.2pt] (5.05, 5.40) -- (5.60, 5.32);
+					
+					% --- 4. CHASSI CENTRAL EM CINZA-GRAFITE ESCURO ---
+					% Face frontal esquerda
+					\fill[ChassisGray] (0.75, 1.35) -- (2.55, 0.85) -- (2.55, 2.45) -- (0.75, 2.95) -- cycle;
+					% Face lateral direita
+					\fill[ChassisGray!85!black] (2.55, 0.85) -- (3.55, 1.25) -- (3.55, 2.85) -- (2.55, 2.45) -- cycle;
+					% Face superior
+					\fill[ChassisGray!90!white] (0.75, 2.95) -- (2.55, 2.45) -- (3.55, 2.85) -- (1.75, 3.35) -- cycle;
+					
+					% Parte superior da coluna amarela emergindo do chassi + Cubo azul no topo
+					\fill[ColYellow!95!orange] (1.65, 2.75) -- (2.05, 2.63) -- (2.05, 4.10) -- (1.65, 4.22) -- cycle;
+					\fill[ColYellow] (2.05, 2.63) -- (2.35, 2.75) -- (2.35, 4.22) -- (2.05, 4.10) -- cycle;
+					% Cubo azul no topo da coluna
+					\fill[SensorBlue] (1.35, 4.05) -- (1.90, 3.90) -- (1.90, 4.45) -- (1.35, 4.60) -- cycle;
+					\fill[SensorBlue!80!black] (1.90, 3.90) -- (2.30, 4.10) -- (2.30, 4.65) -- (1.90, 4.45) -- cycle;
+					\fill[SensorBlue!75!white] (1.35, 4.60) -- (1.90, 4.45) -- (2.30, 4.65) -- (1.75, 4.80) -- cycle;
+					
+					% Placa lateral branca com recorte/encaixe de motor NEMA 17
+					\fill[white, draw=gray!50] (2.68, 1.50) -- (3.42, 1.75) -- (3.42, 2.55) -- (2.68, 2.30) -- cycle;
+					\fill[ChassisGray] (3.05, 2.02) ellipse (0.18 and 0.22);
+					\fill[ChassisGray] (2.78, 2.20) circle (0.03);
+					\fill[ChassisGray] (3.32, 2.38) circle (0.03);
+					\fill[ChassisGray] (2.78, 1.65) circle (0.03);
+					\fill[ChassisGray] (3.32, 1.83) circle (0.03);
+					
+					% --- 5. BRAÇO PRINCIPAL DIREITO ARTICULADO ---
+					% Junta do ombro (preta)
+					\fill[ChassisGray] (3.55, 2.05) circle (0.30);
+					\fill[white] (3.55, 2.05) circle (0.12);
+					% Servo motor acoplado no braço
+					\fill[ChassisGray!90!black] (3.85, 1.55) -- (4.45, 1.80) -- (4.45, 2.25) -- (3.85, 2.00) -- cycle;
+					% Braço superior (branco) inclinado para cima/direita
+					\fill[white, draw=gray!45] (3.65, 2.20) -- (5.25, 3.30) -- (5.45, 3.00) -- (3.85, 1.90) -- cycle;
+					% Junta do cotovelo direito (preta)
+					\fill[ChassisGray] (5.35, 3.15) circle (0.26);
+					\fill[white] (5.35, 3.15) circle (0.10);
+					% Antebraço direito (branco) descendo para o punho
+					\fill[white, draw=gray!45] (5.22, 3.00) -- (5.75, 1.85) -- (6.05, 1.98) -- (5.52, 3.13) -- cycle;
+					% Punho e garra branca com servo preto e dedos vermelhos
+					\fill[white, draw=gray!50] (5.20, 1.45) -- (5.85, 1.65) -- (5.70, 2.15) -- (5.05, 1.95) -- cycle;
+					\fill[ChassisGray] (5.28, 1.65) rectangle (5.55, 1.92);
+					% Dedos vermelhos abertos apontando para a esquerda/baixo
+					\draw[ClawRed, line width=2.2pt] (5.12, 1.92) -- (4.65, 2.02);
+					\draw[ClawRed, line width=2.2pt] (5.08, 1.55) -- (4.62, 1.48);
+				\end{tikzpicture}
+				
+				\vspace{0.08cm}
+				{\tiny\textit{*Imagem ilustrativa, não será a versão oficial do prototipo}}
+			\end{column}
+			
+			% Coluna Central (4 capacidades)
+			\begin{column}{0.32\textwidth}
+				\scriptsize
+				\textbf{\color{FlexoBlue}Dois braços articulados}\\
+				270 mm cada, num carro com eixos X e Y: chegam às duas laterais da placa de 256 mm.
+				\vspace{0.18cm}
+				
+				\textbf{\color{FlexoBlue}Punho de 3 eixos}\\
+				Giro lateral, inclinação e giro em torno do próprio eixo: levanta, flexiona e torce a placa.
+				\vspace{0.18cm}
+				
+				\textbf{\color{FlexoBlue}Software próprio}\\
+				Um programa nosso, faz o robô e as impressoras conversarem: status da A1 e sequência das mãos.
+				\vspace{0.18cm}
+				
+				\textbf{\color{FlexoBlue}Aguenta peso e calor}\\
+				Materiais que suportam o peso e a temperatura da placa PEI, até a máxima da mesa da Bambu Lab.
+			\end{column}
+			
+			% Coluna Direita (4 capacidades)
+			\begin{column}{0.32\textwidth}
+				\scriptsize
+				\textbf{\color{FlexoBlue}Pinças para impressão 3D}\\
+				Dedos de 60 mm com almofada de TPU: pegam a orelha da placa e a lateral dela para torcer.
+				\vspace{0.18cm}
+				
+				\textbf{\color{FlexoBlue}Sensores}\\
+				Força na pinça, câmeras e fins de curso. Com o software, o sensor identifica o tamanho da peça e decide o que fazer.
+				\vspace{0.18cm}
+				
+				\textbf{\color{FlexoBlue}Várias impressoras}\\
+				Um trilho atende de 3 a 6 A1 em fileira, com botão de emergência na zona de soltura.
+				\vspace{0.18cm}
+				
+				\textbf{\color{FlexoBlue}Movimentos delicados}\\
+				Retirada controlada. O controle de força e velocidade será desenvolvido para reduzir o risco de danos à peça e à placa.
+			\end{column}
+		\end{columns}
+	\end{frame}
+	
+	% ==============================================================================
+	% SLIDE 04/10: SETORIZAÇÃO INDUSTRIAL (Apresentador: Steve)
+	% ==============================================================================
+	\setpresenter{Steve}
+	\begin{frame}{SETORIZAÇÃO INDUSTRIAL}
+		\textbf{\normalsize O Flexo atende o elo das fazendas de impressão na cadeia da manufatura aditiva}
+		\vspace{0.2cm}
+		
+		\begin{columns}[T]
+			\begin{column}{0.48\textwidth}
+				\begin{block}{Concorrentes: Chitu Systems Platecycler C1}
+					\scriptsize
+					(trocador automático de placas de construção)
+					\vspace{0.1cm}
+					\begin{itemize}
+						\item O PlateCycler C1 automatiza a troca de placas na Bambu Lab A1, mas o conjunto exige uma bancada de pelo menos $108 \times 57\text{ cm}$, cerca de $0,62\text{ m}^{2}$, além de espaço à frente para um coletor.
+						\item Sem esse coletor, a placa e a peça podem cair no chão e se danificar.
+						\item Como referência de estoque para uma farm, 10 placas custariam cerca de \textbf{R\$ 4.500} se originais ($10 \times \text{R\$ }450$) ou \textbf{R\$ 1.000} se não oficiais ($10 \times \text{R\$ }100$).
+					\end{itemize}
+				\end{block}
+			\end{column}
+			
+			\begin{column}{0.48\textwidth}
+				\begin{block}{Clientes alvo: Uma solução para cada escala}
+					\scriptsize
+					\begin{itemize}
+						\item \textbf{Microempreendedor:} versão fixa para atender duas impressoras.
+						\item \textbf{Fazenda de impressão:} versão em trilho para várias máquinas.
+					\end{itemize}
+				\end{block}
+				
+				\vspace{0.15cm}
+				\begin{alertblock}{Por que considerar o Flexo?}
+					\scriptsize
+					Uma pessoa não fica ao lado das impressoras 24 horas por dia. O Flexo foi pensado para retirar peças fora do horário da equipe e liberar a máquina para o próximo ciclo, sem plantão exclusivo.\\[4pt]
+					O Flexo amplia o tempo produtivo das impressoras e devolve à equipe o tempo gasto esperando cada ciclo terminar.
+				\end{alertblock}
+			\end{column}
+		\end{columns}
+	\end{frame}
+	
+	% ==============================================================================
+	% SLIDE 05/10: PROTOTIPAGEM (Apresentador: Gabriel)
+	% ==============================================================================
+	\setpresenter{Gabriel}
+	\begin{frame}{PROTOTIPAGEM}
+		\textbf{\normalsize Protótipo: lista de materiais e custo}
+		\vspace{0.1cm}
+		
+		\begin{columns}[T]
+			\begin{column}{0.64\textwidth}
+				\scriptsize
+				\begin{tabularx}{\textwidth}{X c r}
+					\toprule
+					\textbf{Item} & \textbf{Qtd.} & \textbf{Preço pesquisado} \\
+					\midrule
+					Estrutura impressa em PETG, cerca de 2 kg & 1 jogo & R\$ 148--188 \\
+					Motores de passo NEMA 17 & 4 & R\$ 50 cada \\
+					Servomotores & 4 & R\$ 10 cada \\
+					Botões de fim de curso & 4 & R\$ 10 cada \\
+					Patins para guia linear HGH15 & 3 & R\$ 150 o par \\
+					Microcontrolador ESP32 & 1 & R\$ 50 \\
+					Fonte de 24 V e 15 A & 1 & R\$ 162--323 \\
+					Rolamentos de esfera comuns & 2 & a cotar \\
+					\midrule
+					\textbf{Subtotal da lista técnica, sem rolamentos nem impressão 3D} & & \textbf{R\$ 717--878} \\
+					\midrule
+					Filamentos como PETG, TPU, ASA & 6 & Média de R\$ 85 cada \\
+					Assinaturas de IAs para auxiliar o projeto & * & Média de R\$ 110 \\
+					\bottomrule
+				\end{tabularx}
+			\end{column}
+			
+			\begin{column}{0.33\textwidth}
+				\begin{block}{Já pesquisado, em reais}
+					\centering\Large\textbf{\color{FlexoOrange}R\$ 3,0--4,5 mil}
+					\flushleft\scriptsize\vspace{0.1cm}
+					Estrutura, motores, polias, rolamentos, Raspberry Pi e fonte e outros.\\[3pt]
+					\textit{*Valor para construção completa do protótipo oficial do modelo fixo e trilhos.}
+				\end{block}
+				
+				\begin{block}{Ainda a cotar}
+					\scriptsize Peças impressas em 3D, rolamentos, correias, parafusos e fiação.
+				\end{block}
+			\end{column}
+		\end{columns}
+		
+		\vspace{0.1cm}
+		{\tiny\textit{Preços de lojas, anúncios e estimativas da equipe, nov/2026. Frete e imposto fora.}}
+	\end{frame}
+	
+	% ==============================================================================
+	% SLIDE 06/10: ABORDAGEM ANALÍTICA (Apresentador: Gabriel)
+	% ==============================================================================
+	\setpresenter{Gabriel}
+	\begin{frame}{ABORDAGEM ANALÍTICA}
+		\textbf{\normalsize Os braços alcançam o cubo de 256 mm e os motores têm folga}
+		\vspace{0.18cm}
+		
+		\begin{columns}[T]
+			\begin{column}{0.32\textwidth}
+				\begin{block}{Alcance: \textbf{270 mm}}
+					\scriptsize
+					$$\cos \varphi = \frac{r^{2} - L_{1}^{2} - L_{2}^{2}}{2 L_{1} L_{2}}$$
+					Com $r = 400\text{ mm}$, o cotovelo abre $97,8^{\circ}$. O cubo de $256\text{ mm}$ é coberto de $300$ a $440\text{ mm}$ do ombro; com elos de $200\text{ mm}$, só numa faixa de $50\text{ mm}$.
+				\end{block}
+			\end{column}
+			
+			\begin{column}{0.32\textwidth}
+				\begin{block}{Torque nas juntas: \textbf{7,8 N$\cdot$m}}
+					\scriptsize
+					$$T = g \cdot \sum(m \cdot d) \le T_{\text{motor}} \cdot i \cdot \eta$$
+					Ombro: $7,8\text{ N}\cdot\text{m}$ pedidos contra $12,75\text{ N}\cdot\text{m}$ do NEMA 23 com correia $5{:}1$, \textbf{folga 1,6}. Cotovelo: $\times 2,4$. Massas supostas.
+				\end{block}
+			\end{column}
+			
+			\begin{column}{0.32\textwidth}
+				\begin{block}{Tensão na placa: \textbf{156 MPa}}
+					\scriptsize
+					$$M = \frac{E \cdot I}{R}, \qquad \sigma = \frac{M \cdot c}{I}$$
+					Flexão a $0,4\text{ rad}$: $1,67\text{ N}\cdot\text{m}$. Torção: $1,54\text{ N}\cdot\text{m}$. O servo de $35\text{ kgf}\cdot\text{cm}$ dá $3,43\text{ N}\cdot\text{m}$.\\
+					\textit{Grau do aço: [premissa a validar].}
+				\end{block}
+			\end{column}
+		\end{columns}
+		
+		\vspace{0.3cm}
+		\centering
+		\textbf{\color{FlexoBlue}Fórmula, número e folga: é isso que alimentará o MATLAB e o Ansys.}
+	\end{frame}
+	
+	% ==============================================================================
+	% SLIDE 07/10: ABORDAGEM ANALÍTICA SIMULAÇÃO (Apresentador: João)
+	% ==============================================================================
+	\setpresenter{João}
+	\begin{frame}{ABORDAGEM ANALÍTICA SIMULAÇÃO}
+		\textbf{\normalsize Em 60 segundos de vídeo, o mesmo número sai do cálculo, do MATLAB e do Ansys}
+		\vspace{0.18cm}
+		
+		\footnotesize
+		\begin{tabularx}{\textwidth}{c l X}
+			\toprule
+			\textbf{Tempo} & \textbf{Ferramenta} & \textbf{O que aparece na tela} \\
+			\midrule
+			\textbf{0--5 s} & Título & Logotipo da Turno e a pergunta: o robô alcança a placa e a placa aguenta? \\
+			\addlinespace
+			\textbf{5--20 s} & CAD & Montagem do Flexo no SolidWorks girando, depois a vista explodida da garra e do punho. \\
+			\addlinespace
+			\textbf{20--38 s} & MATLAB & Mapa de alcance do cubo de $256\text{ mm}$ e a curva de momento e tensão por ângulo, com o cursor em $0,4\text{ rad}$ e $156\text{ MPa}$. \\
+			\addlinespace
+			\textbf{38--55 s} & Ansys & A placa de aço flexionada pela mão, com o mapa de tensão de von Mises e o valor máximo em destaque. \\
+			\addlinespace
+			\textbf{55--60 s} & Fechamento & Cálculo, MATLAB e Ansys lado a lado, com a diferença entre eles. \\
+			\bottomrule
+		\end{tabularx}
+		
+		\vspace{0.22cm}
+		\scriptsize\textit{Duração total: 60 s. Os arquivos \texttt{.m} e a configuração do Ansys ficam com a equipe.}		
+	\end{frame}
+	
+	% ==============================================================================
+	% SLIDE 08/10: IMPACTO SOCIAL (Apresentador: João)
+	% ==============================================================================
+	\setpresenter{João}
+	\begin{frame}{IMPACTO SOCIAL}
+		\textbf{\normalsize O pequeno negócio de impressão passa a produzir de noite sem alguém de plantão}
+		\vspace{0.18cm}
+		
+		\begin{columns}[T]
+			\begin{column}{0.32\textwidth}
+				\begin{block}{Menos trabalho repetitivo}
+					\scriptsize O operador deixa de trocar placa de madrugada e passa a cuidar de projeto, venda e qualidade.
+				\end{block}
+			\end{column}
+			
+			\begin{column}{0.32\textwidth}
+				\begin{block}{Mais renda para pequenos empreendedores}
+					\scriptsize As mesmas impressoras produzem mais horas por dia, sem novo investimento em máquinas.
+				\end{block}
+			\end{column}
+			
+			\begin{column}{0.32\textwidth}
+				\begin{block}{Módulos para ajustar a necessidade}
+					\scriptsize O robô será feito de uma forma que a pessoa que comprou ele na forma fixa poderá encaixá-lo no trilho. As garras também terão diferentes tipos de módulos, cada um para uma situação diferente, contando com garras de pinça, garras tentáculos de TPU e entre outras.
+				\end{block}
+			\end{column}
+		\end{columns}
+		
+		\vspace{0.25cm}
+		\begin{alertblock}{Impacto na Capacidade Produtiva}
+			\scriptsize Em uma empresa com 10 impressoras, se cada uma ficar parada 4 horas por noite, a espera soma \textbf{40 horas no total por noite}, \textbf{280 por semana} e cerca de \textbf{1.200 horas por mês}. São horas de capacidade produtiva desperdiçadas acumuladas entre as máquinas.
+		\end{alertblock}
+	\end{frame}
+	
+	% ==============================================================================
+	% SLIDE 09/10: NOSSA TESE (Apresentador: Júlio)
+	% ==============================================================================
+	\setpresenter{Júlio}
+	\begin{frame}{NOSSA TESE}
+		\textbf{\large Cinco calouros de Engenharia Mecânica conseguem colocar este protótipo na realidade!?!}
+		\vspace{0.15cm}
+		
+		\begin{columns}[T]
+			\begin{column}{0.48\textwidth}
+				\scriptsize
+				\textbf{\color{FlexoOrange}01.} \textbf{3 membros com impressoras a disposição}\\
+				O grupo dispõe de pessoas especializadas em produzir com impressoras 3D e softwares de CAD/CAM.
+				\vspace{0.2cm}
+				
+				\textbf{\color{FlexoOrange}02.} \textbf{Peças de prateleira}\\
+				Motores NEMA, servos, rolamentos 608ZZ e correias GT2 existem no Brasil e já têm lista e preço.
+				\vspace{0.2cm}
+				
+				\textbf{\color{FlexoOrange}03.} \textbf{Cinco frentes, cinco pessoas}\\
+				Eixos X e Y, braços e luva, garra e punho, eletrônica e software, simulação, negócios e mídia, cada um com a sua tarefa.
+			\end{column}
+			
+			\begin{column}{0.48\textwidth}
+				\scriptsize
+				\textbf{\color{FlexoOrange}04.} \textbf{Protótipo quase pronto}\\
+				Eixos X e Y desenhados no SolidWorks, mais de 15 peças em STL, cálculo de torque e alcance e lista de materiais.
+				\vspace{0.2cm}
+				
+				\textbf{\color{FlexoOrange}05.} \textbf{Visibilidade midiática}\\
+				Gravar todo o processo, da ideia à venda, e mandar um robô de teste a influenciadores de impressão 3D, em busca de parceria.
+			\end{column}
+		\end{columns}
+		
+		\vspace{0.25cm}
+		\begin{block}{Próximo Passo}
+			\footnotesize Falta imprimir, montar e medir. O primeiro passo é um braço funcionando antes de montar os dois.
+		\end{block}
+	\end{frame}
+	
+	% ==============================================================================
+	% SLIDE 10/10: ANÁLISE DE TRI (Apresentador: Júlio)
+	% ==============================================================================
+	\setpresenter{Júlio}
+	\begin{frame}{ANÁLISE DE TRI}
+		\textbf{\normalsize Com R\$ 150 mil, o caixa fica positivo no ano 4 e a TRI é de 36\%}
+		\vspace{0.12cm}
+		
+		\begin{columns}[T]
+			\begin{column}{0.53\textwidth}
+				\scriptsize
+				\begin{tabular}{c c r r}
+					\toprule
+					\textbf{Ano} & \textbf{Unidades} & \textbf{Fluxo do ano (R\$)} & \textbf{Acumulado (R\$)} \\
+					\midrule
+					0 & -- & $-150.000$ & $-150.000$ \\
+					1 & 10 & $-42.000$ & $-192.000$ \\
+					2 & 40 & $12.000$ & $-180.000$ \\
+					3 & 100 & $100.000$ & $-80.000$ \\
+					4 & 180 & $224.000$ & $144.000$ \\
+					5 & 250 & $330.000$ & $474.000$ \\
+					\bottomrule
+				\end{tabular}
+				
+				\vspace{0.18cm}
+				\textbf{Premissas, todas a validar:}\\
+				Preço de venda R\$ 4.500, custo unitário em série R\$ 2.700, margem R\$ 1.800 por unidade. Custo fixo de R\$ 60 mil a R\$ 120 mil por ano, 5 anos sem valor residual. O protótipo único custa mais que o custo em série (slide 5).
+			\end{column}
+			
+			\begin{column}{0.44\textwidth}
+				\begin{block}{O GRANDE OBJETIVO: Funcional, eficiente e acessível}
+					\scriptsize O principal objetivo do projeto é desenvolver um robô com preço de venda inferior ao de um \textbf{AMS Lite da Bambu Lab}.
+				\end{block}
+				
+				\begin{alertblock}{Resultado}
+					\footnotesize \textbf{TRI de 36,3\% ao ano.} VPL de \textbf{R\$ 180 mil} a uma taxa de 15\% ao ano.
+				\end{alertblock}
+				
+				\vspace{0.08cm}
+				\begin{flushright}
+					\scriptsize Embasamento dos dados: \qrcode[height=1.05cm]{https://magnetic-gallimimus-553.notion.site/Detalhamento-do-Projeto-Flexo-4190242dfa12800b976df23219a83bc9}
+				\end{flushright}
+			\end{column}
+		\end{columns}
+	\end{frame}
+	
+\end{document}
